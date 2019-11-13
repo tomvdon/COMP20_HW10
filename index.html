@@ -2,57 +2,81 @@
 <html>
 <head>
 	<title>Assignment 10</title>
+	<style type="text/css">
+		body{
+			background-color: #C6D8D3;
+			text-align: center;
+			color: #331832;
+		}
+		div{
+			font-size: 1.3em;
+			display: block;
+			margin: 20px auto;
+			max-width: 200px;
+		}
+		.response{
+			background-color: #FDF0D5;
+			border: 2px solid #F0544F;
+			max-width: 800px;
+			font-size: 1em;
+			text-align: left;
+		}
+		li{
+			padding: 10px;
+		}
+	</style>
 	<script type="text/javascript">
-			function getWeather() {
+		// Code modified from in class example
+			function getDOTA() {
 			/* Step 1: Make instance of request object...
 			...to make HTTP request after page is loaded*/
 			request = new XMLHttpRequest();
-			console.log("1 - request object created");
- 
 			// Step 2: Set the URL for the AJAX request to be the JSON file
  
-			request.open("GET", "https://www.giantbomb.com/api/game/3030-4725/?format=jsonp&json_callback=?&field_list=genres,name&api_key=52a50c922a018f97e278cf497fa9d8d11fb6e182", true);
-
-			console.log("2 - opened request file");
+			request.open("GET", "https://api.opendota.com/api/players/39916820/", true);
  
 			// Step 3: set up event handler/callback
 
 			request.onreadystatechange = function() {
-				console.log("3 - readystatechange event fired.");
- 
 				if (request.readyState == 4 && request.status == 200) {
 
 					// Step 5: wait for done + success
-
 					result = request.responseText;
-					alert(result)
-					weather = JSON.parse(result);
-					
-					document.getElementById("data").innerHTML ="current temp in boston: " + weather["main"]["temp"]; 
-					
+					result = JSON.parse(result);
+					//Sets player name, avatar and MMR divs based on API Call
+					document.getElementById("name").innerHTML = "Name: "+ result["profile"]["personaname"]
+					document.getElementById("av").innerHTML = "<img src="+ result["profile"]["avatarfull"] + "alt='My Avatar'>"
+					document.getElementById("mmr").innerHTML = "Matchmaking Rank: "+ result["mmr_estimate"]["estimate"]
 				}
 				else if (request.readyState == 4 && request.status != 200) {
 
-					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+					document.getElementById("name").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
 
 				}
 
 				else if (request.readyState == 3) {
 
-					document.getElementById("data").innerHTML = "Too soon!  Try again";
+					document.getElementById("name").innerHTML = "Too soon!  Try again";
 
 				}
-
 			}
 		// Step 4: fire off the HTTP request
 			request.send();
-			console.log("4 - Request sent");
 		}
 	</script>
 </head>
-<body onload="getWeather()">
+<body onload="getDOTA()">
+	<h1>My DOTA Stats</h1>
+	<div id="name">Loading...</div>
+	<div id="av"></div>
+	<div id="mmr">Loading...</div>
+	<div class="response">
+		<ul>
+			<li> I selected the Opendota API which provides in depth statistical/aggregate data for the video game DOTA2. It can retrieve information on players and matches not usually available inside the game.</li>
+			<li>It can be found at <a href="https://www.opendota.com/"> https://www.opendota.com/ </a> </li>
+			<li>The option used in the API call was my unique player ID in order to find information related to my profile</li>
+			<li>This API could be used in an application for players to track their rankings and data over time and display these trends. It could also be used to see which units or items have the highest win rate for each patch of the game and displays these results. </li>
 
-	<h1>Weather</h1>
-	<div id="data">Loading...</div>
+	</div>
 </body>
 </html>
